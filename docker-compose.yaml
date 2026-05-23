@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-supersecurepassword}
+      POSTGRES_DB: ${PG_DBNAME:-reception}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    image: ghcr.io/gxjakkap/prefreshybot:main
+    restart: always
+    pull_policy: always
+    environment:
+      - NODE_ENV=production
+      - GLOBAL=true
+      - DISCORD_TOKEN=${DISCORD_TOKEN:?"Please provide DISCORD_TOKEN"}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID:?"Please provide DISCORD_CLIENT_ID"}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID:?"Please provide DISCORD_GUILD_ID"}
+      - SHEET_ID=${SHEET_ID:?"Please provide SHEET_ID"}
+      - SHEET_NAME=${SHEET_NAME:?"Please provide SHEET_NAME"}
+      - PG_HOST=db
+      - PG_USER=${PG_USER:-postgres}
+      - PG_PASSWORD=${PG_PASSWORD:-supersecurepassword}
+      - PG_DBNAME=${PG_DBNAME:-prefreshybot}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
