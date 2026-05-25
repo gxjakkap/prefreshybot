@@ -27,6 +27,7 @@ services:
       - SHEET_ID=${SHEET_ID:?"Please provide SHEET_ID"}
       - SHEET_NAME=${SHEET_NAME:?"Please provide SHEET_NAME"}
       - PG_HOST=db
+      - PG_PORT=${PG_PORT:-5432}
       - PG_USER=${PG_USER:-postgres}
       - PG_PASSWORD=${PG_PASSWORD:-supersecurepassword}
       - PG_DBNAME=${PG_DBNAME:-prefreshybot}

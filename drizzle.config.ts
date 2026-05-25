@@ -10,16 +10,16 @@ console.log({
 });
 
 export default defineConfig({
-    out: './drizzle',
-    schema: './src/db/schema.ts',
-    dialect: 'postgresql',
-    breakpoints: false,
-    dbCredentials: {
-        host: process.env.PG_HOST!,
-        port: Number(process.env.PG_PORT!),
-        user: process.env.PG_USER!,
-        password: process.env.PG_PASSWORD!,
-        database: process.env.PG_DBNAME!,
-        ssl: false,
-    },
+  out: './drizzle',
+  schema: './src/db/schema.ts',
+  dialect: 'postgresql',
+  breakpoints: false,
+  dbCredentials: {
+    host: process.env.PG_HOST!,
+    port: Number(process.env.PG_PORT ?? 5432),
+    user: process.env.PG_USER!,
+    password: process.env.PG_PASSWORD!,
+    database: process.env.PG_DBNAME!,
+    ssl: false,
+  },
 });
