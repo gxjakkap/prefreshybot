@@ -1,9 +1,34 @@
 {
-  "id": "c8e9b790-172f-4b87-8085-626d7c5c6da4",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f7d22744-5760-443e-9677-28e7938d7f0b",
+  "prevId": "c8e9b790-172f-4b87-8085-626d7c5c6da4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.settings": {
+      "name": "settings",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.staffs": {
       "name": "staffs",
       "schema": "",
@@ -106,7 +131,7 @@
           "name": "head_role_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},

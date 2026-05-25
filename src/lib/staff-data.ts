@@ -5,6 +5,7 @@ import { fetchPublicSheetFromAPI } from "./sheet";
 export const insertNewStaffs = async () => {
     console.log("[insertNewStaffs] Checking for new staff members");
     const sheetData = await fetchPublicSheetFromAPI(process.env.SHEET_ID!, process.env.SHEET_NAME!);
+    console.log(sheetData)
     const existingStaff = await db.select().from(staffs);
     const existingStaffIds = existingStaff.map((staff) => staff.studentId);
     const newStaff = sheetData.filter((staff) => !existingStaffIds.includes(staff.studentId));

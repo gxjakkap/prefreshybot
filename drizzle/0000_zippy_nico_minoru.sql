@@ -9,12 +9,14 @@ CREATE TABLE "staffs" (
 	CONSTRAINT "staffs_student_id_unique" UNIQUE("student_id"),
 	CONSTRAINT "staffs_user_id_unique" UNIQUE("user_id")
 );
---> statement-breakpoint
+
 CREATE TABLE "teams" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"display_name" text NOT NULL,
 	"slug" text NOT NULL,
 	"role_id" text NOT NULL,
+	"head_role_id" text,
 	CONSTRAINT "teams_slug_unique" UNIQUE("slug"),
-	CONSTRAINT "teams_role_id_unique" UNIQUE("role_id")
+	CONSTRAINT "teams_role_id_unique" UNIQUE("role_id"),
+	CONSTRAINT "teams_head_role_id_unique" UNIQUE("head_role_id")
 );

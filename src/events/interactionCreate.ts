@@ -7,6 +7,12 @@ import {
   ModalSubmitInteraction,
   StringSelectMenuInteraction,
 } from "discord.js";
+import { DiscordAPIError } from "discord.js";
+
+/** Silently drop "Unknown interaction" (10062) — token expired, nothing we can do. */
+function isExpired(err: unknown): boolean {
+  return err instanceof DiscordAPIError && err.code === 10062;
+}
 import type { BotClient, Event } from "../types.js";
 
 const interactionCreate: Event<"interactionCreate"> = {
@@ -56,7 +62,9 @@ const interactionCreate: Event<"interactionCreate"> = {
       try {
         await handler.execute(interaction as ButtonInteraction);
       } catch (err) {
-        console.error(`[InteractionCreate] Button error (${interaction.customId}):`, err);
+        if (!isExpired(err)) {
+          console.error(`[InteractionCreate] Button error (${interaction.customId}):`, err);
+        }
       }
       return;
     }
@@ -70,7 +78,9 @@ const interactionCreate: Event<"interactionCreate"> = {
       try {
         await handler.execute(interaction as ModalSubmitInteraction);
       } catch (err) {
-        console.error(`[InteractionCreate] Modal error (${interaction.customId}):`, err);
+        if (!isExpired(err)) {
+          console.error(`[InteractionCreate] Modal error (${interaction.customId}):`, err);
+        }
       }
       return;
     }

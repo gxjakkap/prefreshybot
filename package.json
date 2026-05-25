@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
-    "deploy": "bun scripts/generate-commands-manifest.ts && bun run src/deploy-commands.ts"
+    "deploy": "bun scripts/generate-commands-manifest.ts && bun run src/deploy-commands.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "bun scripts/migrate.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

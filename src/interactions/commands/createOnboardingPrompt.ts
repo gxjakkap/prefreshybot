@@ -1,29 +1,23 @@
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   EmbedBuilder,
   MessageFlags,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from "discord.js";
 import type { Command } from "../../types.js";
+import { db } from "../../db/index.js";
+import { settings } from "../../db/schema.js";
+import { eq } from "drizzle-orm";
 
 const createOnboardingPrompt: Command = {
   data: new SlashCommandBuilder()
     .setName("createonboardingprompt")
-    .setDescription("(Admin) Send the prompt message with its trigger button.")
+    .setDescription("(Admin) Send the onboarding prompt message.")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((opt) =>
       opt
-        .setName("buttonlabel")
-        .setDescription("The label of the button.")
-        .setRequired(true)
-    )
-    .addStringOption((opt) =>
-      opt
         .setName("message")
-        .setDescription("Optional caption to show above the button.")
+        .setDescription("Caption to show. Use /link as the call-to-action (default provided).")
         .setRequired(false)
     )
     .addStringOption((opt) =>
@@ -43,10 +37,26 @@ const createOnboardingPrompt: Command = {
     ),
 
   async execute(interaction) {
-    const caption = (interaction.options.getString("message") ?? "Click the button below to open the prompt.")
-      .replace(/\\n/g, "\n");
+    const [setting] = await db
+      .select()
+      .from(settings)
+      .where(eq(settings.key, "defaultOnboardedRole"))
+      .limit(1);
+
+    if (!setting) {
+      await interaction.reply({
+        content: "Bot is not configured yet. Run `/setup` first.",
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    const caption = (
+      interaction.options.getString("message") ??
+      "พิมพ์ `/link` เพื่อลงทะเบียนและรับยศตามฝ่าย"
+    ).replace(/\\n/g, "\n");
+
     const messageType = interaction.options.getString("messagetype") ?? "normal";
-    const buttonLabel = interaction.options.getString("buttonlabel", true);
 
     const channelOption = interaction.options.getChannel("channel");
     const channel = channelOption
@@ -58,21 +68,13 @@ const createOnboardingPrompt: Command = {
       return;
     }
 
-    const button = new ButtonBuilder()
-      .setCustomId("open_onboarding_modal")
-      .setLabel(buttonLabel)
-      .setStyle(ButtonStyle.Primary);
-
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
-
     if (messageType === "embed") {
       const embed = new EmbedBuilder()
         .setDescription(caption)
         .setColor(0x5865f2);
-      await channel.send({ embeds: [embed], components: [row] });
-    }
-    else {
-      await channel.send({ content: caption, components: [row] });
+      await channel.send({ embeds: [embed] });
+    } else {
+      await channel.send({ content: caption });
     }
 
     await interaction.reply({ content: "Message sent.", flags: MessageFlags.Ephemeral });

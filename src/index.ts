@@ -46,9 +46,9 @@ await loadEvents(client);
 await loadInteractions(client);
 
 await insertNewStaffs();
-Bun.cron("@hourly", async () => {
+setInterval(async () => {
   await insertNewStaffs();
-});
+}, 60 * 60 * 1000); // every hour
 
 const token = Bun.env.DISCORD_TOKEN;
 if (!token) throw new Error("Missing environment variable: DISCORD_TOKEN");
