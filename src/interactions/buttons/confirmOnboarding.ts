@@ -1,7 +1,7 @@
 import { GuildMember, MessageFlags } from "discord.js";
 import type { Button } from "../../types.js";
 import { db } from "../../db/index.js";
-import { staffs, teams } from "../../db/schema.js";
+import { settings, staffs, teams } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 
 const confirmOnboarding: Button = {
@@ -18,12 +18,21 @@ const confirmOnboarding: Button = {
       return;
     }
 
-    const [std] = await db
-      .select({ role: teams.roleId, name: staffs.name, nickname: staffs.nickname, year: staffs.year })
-      .from(staffs)
-      .where(eq(staffs.studentId, studentId))
-      .leftJoin(teams, eq(staffs.team, teams.slug))
-      .limit(1);
+    const [[std], [onboardRole]] = await Promise.all([
+      db
+        .select({ role: teams.roleId, name: staffs.name, nickname: staffs.nickname, year: staffs.year })
+        .from(staffs)
+        .where(eq(staffs.studentId, studentId))
+        .leftJoin(teams, eq(staffs.team, teams.slug))
+        .limit(1),
+      db
+        .select({ value: settings.value })
+        .from(settings)
+        .where(eq(settings.key, "defaultOnboardedRole"))
+        .limit(1)
+    ])
+
+
 
     if (!std) {
       await interaction.update({ content: `<@${interaction.user.id}> ไม่พบข้อมูลของคุณ กรุณาติดต่อฝ่ายประธาน`, embeds: [], components: [] });
@@ -33,6 +42,7 @@ const confirmOnboarding: Button = {
     try {
       await interaction.member.roles.add(std.role!);
       await interaction.member.setNickname(`${std.nickname} ปี ${std.year}`);
+      if (onboardRole?.value) await interaction.member.roles.add(onboardRole.value);
 
       await db
         .update(staffs)
