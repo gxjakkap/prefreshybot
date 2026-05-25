@@ -30,7 +30,7 @@ const onboardingModalSubmit: Modal = {
     }
 
     const [std] = await db
-      .select({ studentId: staffs.studentId, role: teams.roleId, name: staffs.name, nickname: staffs.nickname, year: staffs.year })
+      .select({ studentId: staffs.studentId, role: teams.roleId, name: staffs.name, nickname: staffs.nickname, year: staffs.year, userId: staffs.userId })
       .from(staffs)
       .where(eq(staffs.studentId, studentId))
       .leftJoin(teams, eq(staffs.team, teams.slug))
@@ -39,6 +39,14 @@ const onboardingModalSubmit: Modal = {
     if (!std) {
       await interaction.reply({
         content: `<@${interaction.user.id}> ไม่พบข้อมูลของคุณ โปรดติดต่อฝ่ายประธาน`,
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    if (std.userId) {
+      await interaction.reply({
+        content: `<@${interaction.user.id}> รหัสนักศึกษานี้ถูกใช้แล้ว (<@${std.userId}>) หากนี่ไม่ใช่คุณ โปรดติดต่อฝ่ายประธาน`,
         flags: MessageFlags.Ephemeral,
       });
       return;
