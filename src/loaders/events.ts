@@ -1,4 +1,3 @@
-import { join } from "path";
 import type { BotClient, Event } from "../types.js";
 
 /**
@@ -6,7 +5,7 @@ import type { BotClient, Event } from "../types.js";
  * Discord.js event listener on the client.
  */
 export async function loadEvents(client: BotClient): Promise<void> {
-  const eventsDir = join(import.meta.dir, "..", "events");
+  const eventsDir = new URL("../events", import.meta.url).pathname;
   const glob = new Bun.Glob("**/*.ts");
 
   for await (const file of glob.scan({ cwd: eventsDir, absolute: true })) {
@@ -19,7 +18,7 @@ export async function loadEvents(client: BotClient): Promise<void> {
     }
 
     const listener = (...args: unknown[]) =>
-      // @ts-expect-error – variadic spread is safe here
+      // @ts-expect-error
       event.execute(...args);
 
     if (event.once) {

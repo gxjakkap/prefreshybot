@@ -1,4 +1,3 @@
-import { join } from "path";
 import type { BotClient, Button, Command, Modal, SelectMenu } from "../types.js";
 
 /**
@@ -12,7 +11,7 @@ import type { BotClient, Button, Command, Modal, SelectMenu } from "../types.js"
  *   interactions/selectMenus/  → client.selectMenus
  */
 export async function loadInteractions(client: BotClient): Promise<void> {
-  const interactionsDir = join(import.meta.dir, "..", "interactions");
+  const interactionsDir = new URL("../interactions", import.meta.url).pathname;
   const glob = new Bun.Glob("**/*.ts");
 
   for await (const file of glob.scan({ cwd: interactionsDir, absolute: true })) {
