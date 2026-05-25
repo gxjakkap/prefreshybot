@@ -1,21 +1,9 @@
-import type { BotClient, Event } from "../types.js";
+import type { BotClient } from "../types.js";
+import { events } from "../events.manifest.js";
 
-/**
- * Recursively globs `src/events/**\/*.ts` and registers each file as a
- * Discord.js event listener on the client.
- */
 export async function loadEvents(client: BotClient): Promise<void> {
-  const eventsDir = new URL("../events", import.meta.url).pathname;
-  const glob = new Bun.Glob("**/*.ts");
-
-  for await (const file of glob.scan({ cwd: eventsDir, absolute: true })) {
-    const mod = (await import(file)) as { default?: Event };
-    const event = mod.default;
-
-    if (!event?.name) {
-      console.warn(`[Events] Skipping ${file}: no default export with "name".`);
-      continue;
-    }
+  for (const event of events) {
+    if (!event?.name) continue;
 
     const listener = (...args: unknown[]) =>
       // @ts-expect-error

@@ -7,6 +7,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 RUN bun scripts/generate-commands-manifest.ts
+RUN bun scripts/generate-handlers-manifest.ts
 
 RUN bun build \
     --minify-whitespace --minify-syntax \

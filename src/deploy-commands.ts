@@ -4,7 +4,7 @@
  * Command list is baked in at build time via src/commands-manifest.ts.
  */
 import { REST, Routes } from "discord.js";
-import { commands } from "./commands-manifest.js";
+import { commands } from "./commands.manifest.js";
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;

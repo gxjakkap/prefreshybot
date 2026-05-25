@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
+    "prep": "bun scripts/generate-handlers-manifest.ts && bun scripts/generate-commands-manifest.ts",
+    "dev": "bun run prep && bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "deploy": "bun scripts/generate-commands-manifest.ts && bun run src/deploy-commands.ts",
     "db:generate": "drizzle-kit generate",
