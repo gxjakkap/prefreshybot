@@ -3,8 +3,13 @@ on:
     push:
         paths:
             - "src/**/*"
+            - "scripts/**/*"
+            - "drizzle.config.ts"
+            - "drizzle/**/*"
             - "package.json"
             - ".github/workflows/**/*"
+            - "Dockerfile"
+            - ".dockerignore"
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
