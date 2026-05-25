@@ -11,7 +11,7 @@ import { join } from "path";
 import { readdirSync } from "fs";
 
 const commandsDir = join(import.meta.dir, "..", "src", "interactions", "commands");
-const manifestPath = join(import.meta.dir, "..", "src", "commands-manifest.ts");
+const manifestPath = join(import.meta.dir, "..", "src", "commands.manifest.ts");
 
 const files = readdirSync(commandsDir)
   .filter((f) => f.endsWith(".ts"))
@@ -27,7 +27,7 @@ const importLines = files.map((f, i) => {
 const exportNames = files.map((_, i) => `cmd${i}`);
 
 const content = [
-  "// AUTO-GENERATED — do not edit by hand.",
+  "// AUTO-GENERATED do not edit by hand.",
   "// Re-run scripts/generate-commands-manifest.ts to update.",
   "import type { Command } from \"./types.js\";",
   "",

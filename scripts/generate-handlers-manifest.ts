@@ -22,28 +22,28 @@ interface ManifestSpec {
 const specs: ManifestSpec[] = [
   {
     dir: join(root, "src", "events"),
-    out: join(root, "src", "events-manifest.ts"),
+    out: join(root, "src", "events.manifest.ts"),
     typeImport: "import type { Event } from \"./types.js\";",
     exportName: "events",
     exportType: "Event[]",
   },
   {
     dir: join(root, "src", "interactions", "buttons"),
-    out: join(root, "src", "buttons-manifest.ts"),
+    out: join(root, "src", "buttons.manifest.ts"),
     typeImport: "import type { Button } from \"./types.js\";",
     exportName: "buttons",
     exportType: "Button[]",
   },
   {
     dir: join(root, "src", "interactions", "modals"),
-    out: join(root, "src", "modals-manifest.ts"),
+    out: join(root, "src", "modals.manifest.ts"),
     typeImport: "import type { Modal } from \"./types.js\";",
     exportName: "modals",
     exportType: "Modal[]",
   },
   {
     dir: join(root, "src", "interactions", "selectMenus"),
-    out: join(root, "src", "select-menus-manifest.ts"),
+    out: join(root, "src", "select-menus.manifest.ts"),
     typeImport: "import type { SelectMenu } from \"./types.js\";",
     exportName: "selectMenus",
     exportType: "SelectMenu[]",
@@ -73,7 +73,7 @@ for (const spec of specs) {
   const exportNames = files.map((_, i) => `h${i}`);
 
   const content = [
-    "// AUTO-GENERATED — do not edit by hand.",
+    "// AUTO-GENERATED do not edit by hand.",
     `// Re-run scripts/generate-handlers-manifest.ts to update.`,
     spec.typeImport,
     "",
