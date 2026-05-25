@@ -7,7 +7,7 @@ dist
 *.tgz
 
 # generated files
-src/commands-manifest.ts
+src/*.manifest.ts
 
 # code coverage
 coverage
