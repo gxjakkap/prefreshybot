@@ -40,7 +40,11 @@ const confirmOnboarding: Button = {
     }
 
     try {
-      await interaction.member.roles.add(std.role!);
+      if (!std.role) {
+        await interaction.update({ content: `<@${interaction.user.id}> ไม่พบ role ของ staff นี้ กรุณาติดต่อฝ่ายประธาน`, embeds: [], components: [] });
+        return;
+      }
+      await interaction.member.roles.add(std.role);
       await interaction.member.setNickname(`${std.nickname} ปี ${std.year}`);
       if (onboardRole?.value) await interaction.member.roles.add(onboardRole.value);
 
