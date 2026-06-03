@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { staffs } from "../db/schema";
 import { fetchPublicSheetFromAPI } from "./sheet";
@@ -8,9 +9,9 @@ const isCompleteStaffRow = (row: Record<string, unknown>): boolean => {
 
     if (
         !studentId || typeof studentId !== "string" || studentId.trim() === "" ||
-        !name      || typeof name      !== "string" || name.trim()      === "" ||
-        !nickname  || typeof nickname  !== "string" || nickname.trim()  === "" ||
-        !team      || typeof team      !== "string" || team.trim()      === ""
+        !name || typeof name !== "string" || name.trim() === "" ||
+        !nickname || typeof nickname !== "string" || nickname.trim() === "" ||
+        !team || typeof team !== "string" || team.trim() === ""
     ) return false;
 
     // year must be a whole number (sheet values arrive as strings)
@@ -31,14 +32,57 @@ export const insertNewStaffs = async () => {
     });
 
     const existingStaff = await db.select().from(staffs);
-    const existingStaffIds = existingStaff.map((staff) => staff.studentId);
-    const newStaff = completeRows.filter((staff) => !existingStaffIds.includes(staff.studentId));
+    const existingByStudentId = new Map(existingStaff.map((s) => [s.studentId, s]));
 
-    if (newStaff.length === 0) {
+    // insert
+    const newStaff = completeRows.filter((row) => !existingByStudentId.has(row.studentId as string));
+
+    if (newStaff.length > 0) {
+        console.log(`[insertNewStaffs] Inserting ${newStaff.length} new staff members`);
+        await db.insert(staffs).values(newStaff);
+        console.log(`[insertNewStaffs] Inserted ${newStaff.length} new staff members`);
+    } else {
         console.log("[insertNewStaffs] No new staff members found");
-        return;
     }
-    console.log(`[insertNewStaffs] Inserting ${newStaff.length} new staff members`);
-    await db.insert(staffs).values(newStaff);
-    console.log(`[insertNewStaffs] Inserted ${newStaff.length} new staff members`);
-}   
+
+    // update
+    const mismatchedStaff = completeRows.filter((row) => {
+        const existing = existingByStudentId.get(row.studentId as string);
+        if (!existing) return false;
+
+        return (
+            existing.name !== row.name ||
+            existing.nickname !== row.nickname ||
+            existing.year !== Number(row.year) ||
+            existing.team !== row.team
+        );
+    });
+
+    if (mismatchedStaff.length > 0) {
+        console.log(`[insertNewStaffs] Updating ${mismatchedStaff.length} staff member(s) with mismatched info`);
+        await Promise.all(
+            mismatchedStaff.map((row) => {
+                const existing = existingByStudentId.get(row.studentId as string)!;
+                console.log(
+                    `[insertNewStaffs] Updating studentId=${row.studentId}:`,
+                    `name: "${existing.name}" → "${row.name}",`,
+                    `nickname: "${existing.nickname}" → "${row.nickname}",`,
+                    `year: ${existing.year} → ${Number(row.year)},`,
+                    `team: "${existing.team}" → "${row.team}"`,
+                );
+                return db
+                    .update(staffs)
+                    .set({
+                        name: row.name as string,
+                        nickname: row.nickname as string,
+                        year: Number(row.year),
+                        team: row.team as string,
+                    })
+                    .where(eq(staffs.studentId, row.studentId as string));
+            }),
+        );
+        console.log(`[insertNewStaffs] Updated ${mismatchedStaff.length} staff member(s)`);
+    } else {
+        console.log("[insertNewStaffs] No mismatched staff info found");
+    }
+}
