@@ -22,7 +22,7 @@ const alink: Command = {
                 name: staffs.name,
                 nickname: staffs.nickname,
                 year: staffs.year,
-                team: sql`coalsce(${teams.displayName}, 'Unknown')`
+                team: sql`coalesce(${teams.displayName}, 'Unknown')`
             })
             .from(staffs)
             .leftJoin(teams, eq(staffs.team, teams.slug))
