@@ -96,7 +96,7 @@ const alink: Command = {
             );
 
         const confirmButton = new ButtonBuilder()
-            .setCustomId(`confirm_onboarding_admin:${studentId}:${targetMember.id}`)
+            .setCustomId(`admin_link_confirm:${studentId}:${targetMember.id}`)
             .setLabel("ยืนยัน")
             .setStyle(ButtonStyle.Success);
 

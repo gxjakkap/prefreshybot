@@ -5,7 +5,7 @@ import { settings, staffs, teams } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 
 const confirmOnboardingAdmin: Button = {
-  customId: "confirm_onboarding_admin",
+  customId: "admin_link_confirm",
 
   async execute(interaction) {
     if (!(interaction.member instanceof GuildMember)) return;
