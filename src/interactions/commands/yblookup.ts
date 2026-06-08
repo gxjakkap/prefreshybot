@@ -42,11 +42,13 @@ const yblookup: Command = {
                 .setName("user")
                 .setDescription("User")
                 .setRequired(true)
-        ),
+        )
+        .addBooleanOption((opt) => opt.setName("ephemeral").setDescription("Hide results from other users").setRequired(false)) ,
 
 
     async execute(interaction) {
-        const mentionable = interaction.options.getMentionable("user", true);
+        const mentionable = interaction.options.getMentionable("user", true)
+        const ephemeral = interaction.options.getBoolean("ephemeral") ?? true
 
         if (!(mentionable instanceof GuildMember)) {
             await interaction.reply({
@@ -78,7 +80,7 @@ const yblookup: Command = {
         const apiKey = process.env.YB_API_KEY;
         if (!apiKey) {
             await interaction.reply({
-                content: "YB_API_KEY is not configured.",
+                content: "Setup Error. Check Console.",
                 flags: MessageFlags.Ephemeral,
             });
             return;
@@ -129,7 +131,7 @@ const yblookup: Command = {
 
         await interaction.reply({
             embeds: [embed, contactEmbed],
-            flags: MessageFlags.Ephemeral,
+            ...(ephemeral && { flags: MessageFlags.Ephemeral }),
         });
     },
 };
