@@ -84,7 +84,9 @@ const yblookup: Command = {
             return;
         }
 
-        const res = await fetch(`https://yb.guntxjakka.me/api/yb/get-info/${std.studentId}`, {
+        const url = `https://yb.guntxjakka.me/api/yb/get-info/${std.studentId}`
+
+        const res = await fetch(url, {
             headers: {
                 "Authorization": apiKey,
             },
@@ -92,7 +94,7 @@ const yblookup: Command = {
         })
 
         if (res.status !== 200){
-            console.log(`err fetching data from yb: ${res.status} ${res.statusText}`)
+            console.log(`err fetching data of user ${targetMember.user.username} (${targetMember.user.id}) (sid: ${std.studentId}, url: ${url}) from yb: ${res.status} ${res.statusText}`)
             await interaction.reply({
                 content: `Error while fetching data from yookbeer`,
                 flags: MessageFlags.Ephemeral,
@@ -112,7 +114,7 @@ const yblookup: Command = {
                 { name: "Nickname (EN)", value: data.eng_nick || "-", inline: true },
                 { name: "Gen", value: String(data.gen), inline: true },
                 { name: "Email", value: data.personal_email || "-", inline: false },
-                { name: "University Email", value: data.personal_email || "-", inline: false },
+                { name: "University Email", value: data.university_email || "-", inline: false },
             );
 
         if (data.img_url) embed.setThumbnail(data.img_url);
