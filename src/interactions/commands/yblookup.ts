@@ -92,6 +92,7 @@ const yblookup: Command = {
         })
 
         if (res.status !== 200){
+            console.log(`err fetching data from yb: ${res.status} ${res.statusText}`)
             await interaction.reply({
                 content: `Error while fetching data from yookbeer`,
                 flags: MessageFlags.Ephemeral,
@@ -117,7 +118,6 @@ const yblookup: Command = {
         if (data.img_url) embed.setThumbnail(data.img_url);
 
         const contactEmbed = new EmbedBuilder()
-            .setTitle("Contact info")
             .addFields(
                 { name: "Instagram", value: data.socials?.id || "-", inline: true },
                 { name: "Facebook", value: data.socials?.fb || "-", inline: true },
