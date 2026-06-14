@@ -109,6 +109,7 @@ const yblookup: Command = {
         const embed = new EmbedBuilder()
             .setTitle("Information from yookbeer")
             .setDescription(`<@${targetMember.id}> 's info (${std.studentId})`)
+            .setURL(`https://yb.guntxjakka.me/std/${data.id}`)
             .addFields(
                 { name: "Name (TH)", value: data.tha_name || "-", inline: true },
                 { name: "Name (EN)", value: data.eng_name || "-", inline: true },
