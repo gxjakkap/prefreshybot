@@ -14,23 +14,21 @@ const isGlobal = process.env.GLOBAL === "true";
 if (!token) throw new Error("Missing environment variable: DISCORD_TOKEN");
 if (!clientId) throw new Error("Missing environment variable: DISCORD_CLIENT_ID");
 if (!isGlobal && !guildId) {
-  throw new Error("Missing environment variable: DISCORD_GUILD_ID (or set GLOBAL=true)");
+    throw new Error("Missing environment variable: DISCORD_GUILD_ID (or set GLOBAL=true)");
 }
 
 // Build the payload from the statically imported command list
 const payload = commands
-  .filter((cmd) => cmd?.data)
-  .map((cmd) => {
-    console.log(`Loaded command: /${cmd.data.name}`);
-    return cmd.data.toJSON();
-  });
+    .filter((cmd) => cmd?.data)
+    .map((cmd) => {
+        console.log(`Loaded command: /${cmd.data.name}`);
+        return cmd.data.toJSON();
+    });
 
 // Push to Discord
 const rest = new REST().setToken(token);
 
-const route = isGlobal
-  ? Routes.applicationCommands(clientId)
-  : Routes.applicationGuildCommands(clientId, guildId!);
+const route = isGlobal ? Routes.applicationCommands(clientId) : Routes.applicationGuildCommands(clientId, guildId!);
 
 console.log(`\nDeploying ${payload.length} command(s) ${isGlobal ? "globally" : `to guild ${guildId}`}…`);
 

@@ -1,8 +1,8 @@
 import { PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
-import type { Command } from "../../types.js";
+import { count } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs } from "../../db/schema.js";
-import { count } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 const staffCount: Command = {
     data: new SlashCommandBuilder()
@@ -39,4 +39,3 @@ const staffCount: Command = {
 };
 
 export default staffCount;
-

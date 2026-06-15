@@ -8,15 +8,24 @@ const isCompleteStaffRow = (row: Record<string, unknown>): boolean => {
     const { studentId, name, nickname, year, team } = row;
 
     if (
-        !studentId || typeof studentId !== "string" || studentId.trim() === "" ||
-        !name || typeof name !== "string" || name.trim() === "" ||
-        !nickname || typeof nickname !== "string" || nickname.trim() === "" ||
-        !team || typeof team !== "string" || team.trim() === ""
-    ) return false;
+        !studentId ||
+        typeof studentId !== "string" ||
+        studentId.trim() === "" ||
+        !name ||
+        typeof name !== "string" ||
+        name.trim() === "" ||
+        !nickname ||
+        typeof nickname !== "string" ||
+        nickname.trim() === "" ||
+        !team ||
+        typeof team !== "string" ||
+        team.trim() === ""
+    )
+        return false;
 
     // year must be a whole number (sheet values arrive as strings)
     const yearNum = Number(year);
-    if (!year || isNaN(yearNum) || !Number.isInteger(yearNum)) return false;
+    if (!year || Number.isNaN(yearNum) || !Number.isInteger(yearNum)) return false;
 
     return true;
 };
@@ -85,4 +94,4 @@ export const insertNewStaffs = async () => {
     } else {
         console.log("[insertNewStaffs] No mismatched staff info found");
     }
-}
+};

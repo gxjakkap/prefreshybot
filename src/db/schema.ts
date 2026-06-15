@@ -6,7 +6,7 @@ export const teams = pgTable("teams", {
     slug: text("slug").unique().notNull(),
     roleId: text("role_id").unique().notNull(),
     headRoleId: text("head_role_id").unique().notNull(),
-})
+});
 
 export const staffs = pgTable("staffs", {
     id: serial("id").primaryKey(),
@@ -16,9 +16,9 @@ export const staffs = pgTable("staffs", {
     year: integer("year").notNull(),
     team: text("team").notNull(),
     userId: text("user_id").unique(),
-})
+});
 
 export const settings = pgTable("settings", {
     key: text("key").primaryKey(),
     value: text("value").notNull(),
-})
+});

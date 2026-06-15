@@ -1,11 +1,7 @@
-import {
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { db } from "../../db/index.js";
 import { settings } from "../../db/schema.js";
+import type { Command } from "../../types.js";
 
 const setup: Command = {
     data: new SlashCommandBuilder()
@@ -16,7 +12,7 @@ const setup: Command = {
             opt
                 .setName("defaultonboardedrole")
                 .setDescription("The role granted to every user who completes onboarding.")
-                .setRequired(true)
+                .setRequired(true),
         ),
 
     async execute(interaction) {

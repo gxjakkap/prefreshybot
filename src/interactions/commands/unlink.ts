@@ -1,32 +1,22 @@
-import {
-    GuildMember,
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
-import { db } from "../../db/index.js";
-import { staffs, teams, settings } from "../../db/schema.js";
+import { type GuildMember, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { eq } from "drizzle-orm";
+import { db } from "../../db/index.js";
+import { settings, staffs, teams } from "../../db/schema.js";
+import type { Command } from "../../types.js";
 
 const unlink: Command = {
     data: new SlashCommandBuilder()
         .setName("unlink")
         .setDescription("(Admin) Unlink a user from their staff record and revert onboarding.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addUserOption((opt) =>
-            opt
-                .setName("user")
-                .setDescription("The user to unlink.")
-                .setRequired(true)
-        ),
+        .addUserOption((opt) => opt.setName("user").setDescription("The user to unlink.").setRequired(true)),
 
     async execute(interaction) {
         const targetUser = interaction.options.getUser("user", true);
 
         let member: GuildMember;
         try {
-            member = await interaction.guild!.members.fetch(targetUser.id);
+            member = await interaction.guild?.members.fetch(targetUser.id);
         } catch {
             await interaction.reply({
                 content: `Could not find <@${targetUser.id}> in this server.`,
@@ -77,13 +67,10 @@ const unlink: Command = {
                 await member.roles.remove(rolesToRemove);
             }
             await member.setNickname(null);
-            await db
-                .update(staffs)
-                .set({ userId: null })
-                .where(eq(staffs.userId, targetUser.id));
+            await db.update(staffs).set({ userId: null }).where(eq(staffs.userId, targetUser.id));
 
             await interaction.reply({
-                content: `<@${targetUser.id}> has been unlinked from staff record \`${staff.studentId}\`. Roles and nickname have been reverted.`
+                content: `<@${targetUser.id}> has been unlinked from staff record \`${staff.studentId}\`. Roles and nickname have been reverted.`,
             });
         } catch (e) {
             console.error("[unlink]", e);

@@ -1,7 +1,7 @@
-import { MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
-import type { Command } from "../../types.js";
+import { PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { db } from "../../db/index.js";
 import { teams } from "../../db/schema.js";
+import type { Command } from "../../types.js";
 
 const listTeam: Command = {
     data: new SlashCommandBuilder()
@@ -19,9 +19,7 @@ const listTeam: Command = {
             return;
         }
 
-        const lines = allTeams.map(
-            (t) => `• **${t.displayName}** (\`${t.slug}\`) <@&${t.roleId}>`
-        );
+        const lines = allTeams.map((t) => `• **${t.displayName}** (\`${t.slug}\`) <@&${t.roleId}>`);
 
         await interaction.reply({
             content: `**Teams (${allTeams.length})**\n${lines.join("\n")}`,

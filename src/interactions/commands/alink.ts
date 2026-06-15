@@ -8,28 +8,19 @@ import {
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from "discord.js";
-import type { Command } from "../../types.js";
+import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs, teams } from "../../db/schema.js";
-import { eq } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 const alink: Command = {
     data: new SlashCommandBuilder()
         .setName("alink")
         .setDescription("(Admin) ลงทะเบียนและยืนยันตัวตนให้ staff ท่านอื่น")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addMentionableOption((opt) =>
-            opt
-                .setName("user")
-                .setDescription("User")
-                .setRequired(true)
-        )
+        .addMentionableOption((opt) => opt.setName("user").setDescription("User").setRequired(true))
         .addStringOption((opt) =>
-            opt
-                .setName("studentid")
-                .setDescription("Student ID")
-                .setRequired(true)
-                .setMaxLength(12)
+            opt.setName("studentid").setDescription("Student ID").setRequired(true).setMaxLength(12),
         ),
 
     async execute(interaction) {

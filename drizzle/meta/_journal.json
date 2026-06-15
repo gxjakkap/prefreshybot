@@ -1,20 +1,20 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1779707132965,
-      "tag": "0000_zippy_nico_minoru",
-      "breakpoints": false
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1779724279808,
-      "tag": "0001_melodic_tomas",
-      "breakpoints": false
-    }
-  ]
+    "version": "7",
+    "dialect": "postgresql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "7",
+            "when": 1779707132965,
+            "tag": "0000_zippy_nico_minoru",
+            "breakpoints": false
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1779724279808,
+            "tag": "0001_melodic_tomas",
+            "breakpoints": false
+        }
+    ]
 }

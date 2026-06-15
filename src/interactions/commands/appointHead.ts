@@ -1,13 +1,8 @@
-import {
-    GuildMember,
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { GuildMember, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs, teams } from "../../db/schema.js";
-import { eq } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 const appointHead: Command = {
     data: new SlashCommandBuilder()
@@ -15,10 +10,7 @@ const appointHead: Command = {
         .setDescription("(Admin) Appoint a user as the head of their team.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addMentionableOption((opt) =>
-            opt
-                .setName("user")
-                .setDescription("The user to appoint as the head of their team.")
-                .setRequired(true)
+            opt.setName("user").setDescription("The user to appoint as the head of their team.").setRequired(true),
         ),
 
     async execute(interaction) {
@@ -68,4 +60,3 @@ const appointHead: Command = {
 };
 
 export default appointHead;
-

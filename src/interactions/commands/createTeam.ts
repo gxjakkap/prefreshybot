@@ -1,46 +1,20 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { eq, or } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { teams } from "../../db/schema.js";
-import { or, eq } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 const createTeam: Command = {
     data: new SlashCommandBuilder()
         .setName("createteam")
         .setDescription("(Admin) Create a new team.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addStringOption((opt) =>
-            opt
-                .setName("name")
-                .setDescription("The label of the button.")
-                .setRequired(true)
-        )
+        .addStringOption((opt) => opt.setName("name").setDescription("The label of the button.").setRequired(true))
+        .addMentionableOption((opt) => opt.setName("role").setDescription("The role of the team.").setRequired(true))
         .addMentionableOption((opt) =>
-            opt
-                .setName("role")
-                .setDescription("The role of the team.")
-                .setRequired(true)
+            opt.setName("head_role").setDescription("The role for the head of the team.").setRequired(true),
         )
-        .addMentionableOption((opt) =>
-            opt
-                .setName("head_role")
-                .setDescription("The role for the head of the team.")
-                .setRequired(true)
-        )
-        .addStringOption((opt) =>
-            opt
-                .setName("slug")
-                .setDescription("The slug of the team.")
-                .setRequired(true)
-        ),
+        .addStringOption((opt) => opt.setName("slug").setDescription("The slug of the team.").setRequired(true)),
 
     async execute(interaction) {
         const name = interaction.options.getString("name", true);
@@ -51,17 +25,11 @@ const createTeam: Command = {
         const existing = await db
             .select()
             .from(teams)
-            .where(
-                or(
-                    eq(teams.displayName, name),
-                    eq(teams.slug, slug),
-                    eq(teams.roleId, role.id),
-                )
-            )
+            .where(or(eq(teams.displayName, name), eq(teams.slug, slug), eq(teams.roleId, role.id)))
             .limit(1);
 
         if (existing.length > 0) {
-            const conflict = existing[0]!
+            const conflict = existing[0]!;
             let reason = "unknown field";
             if (conflict.displayName === name) reason = `name **${name}**`;
             else if (conflict.slug === slug) reason = `slug **${slug}**`;

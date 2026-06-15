@@ -1,10 +1,6 @@
-import {
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { insertNewStaffs } from "../../lib/staff-data.js";
+import type { Command } from "../../types.js";
 
 const syncNow: Command = {
     data: new SlashCommandBuilder()

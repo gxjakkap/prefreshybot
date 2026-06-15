@@ -1,12 +1,8 @@
-import {
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { eq, isNull, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs, teams } from "../../db/schema.js";
-import { eq, isNull, sql } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 const alink: Command = {
     data: new SlashCommandBuilder()
@@ -22,11 +18,11 @@ const alink: Command = {
                 name: staffs.name,
                 nickname: staffs.nickname,
                 year: staffs.year,
-                team: sql`coalesce(${teams.displayName}, 'Unknown')`
+                team: sql`coalesce(${teams.displayName}, 'Unknown')`,
             })
             .from(staffs)
             .leftJoin(teams, eq(staffs.team, teams.slug))
-            .where(isNull(staffs.userId))
+            .where(isNull(staffs.userId));
 
         if (!std) {
             await interaction.reply({
@@ -36,11 +32,11 @@ const alink: Command = {
             return;
         }
 
-        let msg = `**ทีมงานที่ยังไม่ลงทะเบียน (${std.length} คน)**\n`
+        let msg = `**ทีมงานที่ยังไม่ลงทะเบียน (${std.length} คน)**\n`;
 
         std.forEach((ea, i) => {
-            msg += `\n${i}. ${ea.studentId} ${ea.name} (${ea.nickname}) ฝ่าย${ea.team} ปี ${ea.year}`
-        })
+            msg += `\n${i}. ${ea.studentId} ${ea.name} (${ea.nickname}) ฝ่าย${ea.team} ปี ${ea.year}`;
+        });
 
         await interaction.reply(msg);
     },

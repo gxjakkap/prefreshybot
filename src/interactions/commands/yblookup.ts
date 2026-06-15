@@ -1,14 +1,8 @@
-import {
-    EmbedBuilder,
-    GuildMember,
-    MessageFlags,
-    PermissionFlagsBits,
-    SlashCommandBuilder,
-} from "discord.js";
-import type { Command } from "../../types.js";
+import { EmbedBuilder, GuildMember, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs } from "../../db/schema.js";
-import { eq } from "drizzle-orm";
+import type { Command } from "../../types.js";
 
 interface YbGetInfoResponse {
     status: number;
@@ -37,18 +31,14 @@ const yblookup: Command = {
         .setName("yblookup")
         .setDescription("(Admin) Look up staff's info on yookbeer")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addMentionableOption((opt) =>
-            opt
-                .setName("user")
-                .setDescription("User")
-                .setRequired(true)
-        )
-        .addBooleanOption((opt) => opt.setName("ephemeral").setDescription("Hide results from other users").setRequired(false)) ,
-
+        .addMentionableOption((opt) => opt.setName("user").setDescription("User").setRequired(true))
+        .addBooleanOption((opt) =>
+            opt.setName("ephemeral").setDescription("Hide results from other users").setRequired(false),
+        ),
 
     async execute(interaction) {
-        const mentionable = interaction.options.getMentionable("user", true)
-        const ephemeral = interaction.options.getBoolean("ephemeral") ?? true
+        const mentionable = interaction.options.getMentionable("user", true);
+        const ephemeral = interaction.options.getBoolean("ephemeral") ?? true;
 
         if (!(mentionable instanceof GuildMember)) {
             await interaction.reply({
@@ -59,7 +49,6 @@ const yblookup: Command = {
         }
 
         const targetMember = mentionable;
-        
 
         const [std] = await db
             .select({
@@ -86,25 +75,27 @@ const yblookup: Command = {
             return;
         }
 
-        const url = `https://yb.guntxjakka.me/api/yb/get-info/${std.studentId}`
+        const url = `https://yb.guntxjakka.me/api/yb/get-info/${std.studentId}`;
 
         const res = await fetch(url, {
             headers: {
-                "Authorization": apiKey,
+                Authorization: apiKey,
             },
             method: "GET",
-        })
+        });
 
-        if (res.status !== 200){
-            console.log(`err fetching data of user ${targetMember.user.username} (${targetMember.user.id}) (sid: ${std.studentId}, url: ${url}) from yb: ${res.status} ${res.statusText}`)
+        if (res.status !== 200) {
+            console.log(
+                `err fetching data of user ${targetMember.user.username} (${targetMember.user.id}) (sid: ${std.studentId}, url: ${url}) from yb: ${res.status} ${res.statusText}`,
+            );
             await interaction.reply({
                 content: `Error while fetching data from yookbeer`,
                 flags: MessageFlags.Ephemeral,
-            })
-            return
+            });
+            return;
         }
 
-        const data = ((await res.json()) as YbGetInfoResponse).data
+        const data = ((await res.json()) as YbGetInfoResponse).data;
 
         const embed = new EmbedBuilder()
             .setTitle("Information from yookbeer")
@@ -122,13 +113,12 @@ const yblookup: Command = {
 
         if (data.img_url) embed.setThumbnail(data.img_url);
 
-        const contactEmbed = new EmbedBuilder()
-            .addFields(
-                { name: "Instagram", value: data.socials?.id || "-", inline: true },
-                { name: "Facebook", value: data.socials?.fb || "-", inline: true },
-                { name: "Line ID", value: data.socials?.line || "-", inline: true },
-                { name: "Discord", value: data.socials?.discord || "-", inline: true },
-            );
+        const contactEmbed = new EmbedBuilder().addFields(
+            { name: "Instagram", value: data.socials?.id || "-", inline: true },
+            { name: "Facebook", value: data.socials?.fb || "-", inline: true },
+            { name: "Line ID", value: data.socials?.line || "-", inline: true },
+            { name: "Discord", value: data.socials?.discord || "-", inline: true },
+        );
 
         await interaction.reply({
             embeds: [embed, contactEmbed],
