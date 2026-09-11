@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
 import { eq } from "drizzle-orm";
+import { STUDENT_ID_PATTERN } from "../../lib/const.js";
 import { db } from "../../db/index.js";
 import { staffs, teams } from "../../db/schema.js";
 import type { Modal } from "../../types.js";
@@ -13,7 +14,7 @@ const onboardingModalSubmit: Modal = {
         const studentId = interaction.fields.getTextInputValue("student_id_input");
         console.log(`[onboardingModalSubmit] Received student ID from ${interaction.user.tag}:`, studentId);
 
-        const pattern = /(6)[6-9]{1}(07050)(10|34|52|60)[0-9]{2}/;
+        const pattern = STUDENT_ID_PATTERN;
         if (!pattern.test(studentId)) {
             await interaction.reply({
                 content: `<@${interaction.user.id}> รหัสนักศึกษาของคุณไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง`,

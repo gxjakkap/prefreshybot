@@ -11,6 +11,7 @@ import {
 import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { staffs, teams } from "../../db/schema.js";
+import { STUDENT_ID_PATTERN } from "../../lib/const.js";
 import type { Command } from "../../types.js";
 
 const alink: Command = {
@@ -37,7 +38,7 @@ const alink: Command = {
         const targetMember = mentionable;
         const studentId = interaction.options.getString("studentid", true);
 
-        const pattern = /(6)[6-9]{1}(07050)(10|34|52|60)[0-9]{2}/;
+        const pattern = STUDENT_ID_PATTERN;
         if (!pattern.test(studentId)) {
             await interaction.reply({
                 content: `รหัสนักศึกษา \`${studentId}\` ไม่ถูกต้อง`,
