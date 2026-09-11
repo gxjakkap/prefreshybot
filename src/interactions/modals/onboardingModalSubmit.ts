@@ -13,7 +13,7 @@ const onboardingModalSubmit: Modal = {
         const studentId = interaction.fields.getTextInputValue("student_id_input");
         console.log(`[onboardingModalSubmit] Received student ID from ${interaction.user.tag}:`, studentId);
 
-        const pattern = /(6)[6-8]{1}(07050)(10|34|52|60)[0-9]{2}/;
+        const pattern = /(6)[6-9]{1}(07050)(10|34|52|60)[0-9]{2}/;
         if (!pattern.test(studentId)) {
             await interaction.reply({
                 content: `<@${interaction.user.id}> รหัสนักศึกษาของคุณไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง`,

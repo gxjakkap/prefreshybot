@@ -31,7 +31,7 @@ const link: Command = {
             .setCustomId("student_id_input")
             .setLabel("รหัสนักศึกษา (Student ID)")
             .setStyle(TextInputStyle.Short)
-            .setPlaceholder("e.g. 68070501000")
+            .setPlaceholder("e.g. 69070501000")
             .setRequired(true)
             .setMaxLength(12);
 

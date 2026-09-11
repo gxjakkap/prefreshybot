@@ -37,7 +37,7 @@ const alink: Command = {
         const targetMember = mentionable;
         const studentId = interaction.options.getString("studentid", true);
 
-        const pattern = /(6)[6-8]{1}(07050)(10|34|52|60)[0-9]{2}/;
+        const pattern = /(6)[6-9]{1}(07050)(10|34|52|60)[0-9]{2}/;
         if (!pattern.test(studentId)) {
             await interaction.reply({
                 content: `รหัสนักศึกษา \`${studentId}\` ไม่ถูกต้อง`,
