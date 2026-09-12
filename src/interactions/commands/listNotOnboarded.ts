@@ -32,13 +32,25 @@ const alink: Command = {
             return;
         }
 
-        let msg = `**ทีมงานที่ยังไม่ลงทะเบียน (${std.length} คน)**\n`;
+        const lines = std.map(
+            (ea, i) => `${i}. ${ea.studentId} ${ea.name} (${ea.nickname}) ${ea.team} ปี ${ea.year}`,
+        );
 
-        std.forEach((ea, i) => {
-            msg += `\n${i}. ${ea.studentId} ${ea.name} (${ea.nickname}) ฝ่าย${ea.team} ปี ${ea.year}`;
-        });
+        const chunks: string[] = [`**ทีมงานที่ยังไม่ลงทะเบียน (${std.length} คน)**`];
+        for (const line of lines) {
+            const last = chunks.at(-1)!;
+            if (last.length + line.length + 1 > 2000) {
+                chunks.push(line);
+            } else {
+                chunks[chunks.length - 1] = `${last}\n${line}`;
+            }
+        }
 
-        await interaction.reply(msg);
+        const [first, ...rest] = chunks;
+        await interaction.reply(first!);
+        for (const chunk of rest) {
+            await interaction.followUp(chunk);
+        }
     },
 };
 
