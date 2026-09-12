@@ -9,11 +9,12 @@ const syncNow: Command = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
         await insertNewStaffs();
 
-        await interaction.reply({
+        await interaction.editReply({
             content: `<@${interaction.user.id}> synced with sheet.`,
-            flags: MessageFlags.Ephemeral,
         });
     },
 };
